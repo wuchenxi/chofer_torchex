@@ -156,8 +156,9 @@ class SLayer(Module):
         sharpness = sharpness.view(-1, self.point_dimension)
         sharpness = torch.stack([sharpness] * batch_size, 0)
 
-        x = centers - batch
-        x = x.pow(2)
+        xmin = torch.min(centers, batch)
+        xmax = torch.max(centers, batch)
+        x = xmax - xmin
         x = torch.mul(x, sharpness)
         x = torch.sum(x, 2)
         x = torch.exp(-x)
